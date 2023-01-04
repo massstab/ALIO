@@ -1,0 +1,1 @@
+Testing some openai speech whisper chatGPT stuff
