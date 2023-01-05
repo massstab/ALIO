@@ -5,7 +5,6 @@ The soundfile module (https://python-soundfile.readthedocs.io/)
 has to be installed!
 
 """
-import argparse
 import tempfile
 import queue
 import sys
@@ -13,42 +12,8 @@ import sys
 import sounddevice as sd
 import soundfile as sf
 import numpy  # Make sure NumPy is loaded before it is used in the callback
+
 assert numpy  # avoid "imported but unused" message (W0611)
-
-
-def int_or_str(text):
-    """Helper function for argument parsing."""
-    try:
-        return int(text)
-    except ValueError:
-        return text
-
-
-parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument(
-    '-l', '--list-devices', action='store_true',
-    help='show list of audio devices and exit')
-args, remaining = parser.parse_known_args()
-if args.list_devices:
-    print(sd.query_devices())
-    parser.exit(0)
-parser = argparse.ArgumentParser(
-    description=__doc__,
-    formatter_class=argparse.RawDescriptionHelpFormatter,
-    parents=[parser])
-parser.add_argument(
-    'filename', nargs='?', metavar='FILENAME',
-    help='audio file to store recording to')
-parser.add_argument(
-    '-d', '--device', type=int_or_str,
-    help='input device (numeric ID or substring)')
-parser.add_argument(
-    '-r', '--samplerate', type=int, help='sampling rate')
-parser.add_argument(
-    '-c', '--channels', type=int, default=1, help='number of input channels')
-parser.add_argument(
-    '-t', '--subtype', type=str, help='sound file subtype (e.g. "PCM_24")')
-args = parser.parse_args(remaining)
 
 q = queue.Queue()
 
@@ -59,27 +24,39 @@ def callback(indata, frames, time, status):
         print(status, file=sys.stderr)
     q.put(indata.copy())
 
+
+channels = [1]  # input channels to plot -> int
+device = None  # input device (numeric ID or substring) -> int_or_str
+window = 200  # visible time slot, default=200 ms  -> float
+interval = 30  # minimum time between plot updates  -> float
+blocksize = 1024  # block size (in samples)
+samplerate = None  # sampling rate of audio device  -> float
+downsample = 10  # display every Nth sample, default=10  -> int
+filename = None  # audio file to store recording to  -> str
+subtype = "PCM_24"  # sound file subtype (e.g. "PCM_24") -> str
+
+mapping = [c - 1 for c in channels]
+
 try:
-    if args.samplerate is None:
-        device_info = sd.query_devices(args.device, 'input')
+    if samplerate is None:
+        device_info = sd.query_devices(device, 'input')
+        print(device_info)
         # soundfile expects an int, sounddevice provides a float:
-        args.samplerate = int(device_info['default_samplerate'])
-    if args.filename is None:
-        args.filename = tempfile.mktemp(prefix='delme_rec_unlimited_',
-                                        suffix='.wav', dir='')
+        samplerate = int(device_info['default_samplerate'])
+    if filename is None:
+        filename = tempfile.mktemp(prefix='audio', suffix='.wav', dir='')
 
     # Make sure the file is opened before recording anything:
-    with sf.SoundFile(args.filename, mode='x', samplerate=args.samplerate,
-                      channels=args.channels, subtype=args.subtype) as file:
-        with sd.InputStream(samplerate=args.samplerate, device=args.device,
-                            channels=args.channels, callback=callback):
+    with sf.SoundFile(filename, mode='x', samplerate=samplerate,
+                      channels=max(channels), subtype=subtype) as file:
+        with sd.InputStream(samplerate=samplerate, device=device,
+                            channels=max(channels), callback=callback):
             print('#' * 80)
             print('press esc or close signal window to stop the recording')
             print('#' * 80)
             while True:
                 file.write(q.get())
 except KeyboardInterrupt:
-    print('\nRecording finished: ' + repr(args.filename))
-    parser.exit(0)
+    print('\nRecording finished: ' + repr(filename))
 except Exception as e:
-    parser.exit(type(e).__name__ + ': ' + str(e))
+    print(e)
