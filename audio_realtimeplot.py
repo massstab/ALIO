@@ -33,7 +33,7 @@ device = None  # input device (numeric ID or substring) -> int_or_str
 window = 200  # visible time slot, default=200 ms  -> float
 interval = 30  # minimum time between plot updates  -> float
 blocksize = None  # block size (in samples)  -> int
-samplerate = 44100  # sampling rate of audio device  -> float
+samplerate = None  # sampling rate of audio device  -> float
 downsample = 10  # display every Nth sample, default=10  -> int
 filename = 'audio'  # audio file to store recording to  -> str
 subtype = "PCM_24"  # sound file subtype (e.g. "PCM_24") -> str
@@ -102,10 +102,8 @@ try:
         samplerate=samplerate, callback=audio_callback)
     ani = FuncAnimation(fig, update_plot, interval=interval, blit=True)
 
-    print(device)
     with stream:
         plt.show()
 
 except (Exception, KeyboardInterrupt) as e:
-    print('heeeeeeeeeeeerree')
     process.send_signal(signal.SIGINT)

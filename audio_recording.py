@@ -26,7 +26,7 @@ def callback(indata, frames, time, status):
 
 
 channels = [1]  # input channels to plot -> int
-device = None  # input device (numeric ID or substring) -> int_or_str
+device = None# input device (numeric ID or substring) -> int_or_str
 window = 200  # visible time slot, default=200 ms  -> float
 interval = 30  # minimum time between plot updates  -> float
 blocksize = 1024  # block size (in samples)
