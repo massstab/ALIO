@@ -18,13 +18,13 @@ import sounddevice as sd
 def close_plot_by_escape(event):
     if event.key == 'escape':
         print(f'escape is pressed! Sending SIGINT to process {process.pid}')
-        process.send_signal(signal.SIGINT)
+        process.send_signal(signal.SIGTERM)
         plt.close()
 
 
 def close_plot_by_closevent(event):
     print(f'Close event!! Sending SIGINT to process {process.pid}')
-    process.send_signal(signal.SIGINT)
+    process.send_signal(signal.SIGTERM)
     plt.close()
 
 
@@ -71,8 +71,8 @@ def update_plot(frame):
         line.set_ydata(plotdata[:, column])
     return lines
 
-
-process = subprocess.Popen(["venv/bin/python3", "audio_recording.py"], start_new_session=True)
+python_exec_path = sys.executable
+process = subprocess.Popen([python_exec_path, "audio_recording.py"], start_new_session=True)
 print(f'Start recording script as PID: {process.pid}')
 
 try:
