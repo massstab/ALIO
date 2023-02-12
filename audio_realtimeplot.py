@@ -42,7 +42,6 @@ mapping = [c - 1 for c in channels]
 
 q = queue.Queue()
 
-
 def audio_callback(indata, frames, time, status):
     """This is called (from a separate thread) for each audio block."""
     if status:
@@ -59,6 +58,7 @@ def update_plot(frame):
 
     """
     global plotdata
+
     while True:
         try:
             data = q.get_nowait()
@@ -97,6 +97,7 @@ try:
                    right=False, left=False, labelleft=False)
     fig.tight_layout(pad=0)
 
+    print(device)
     stream = sd.InputStream(
         device=device, channels=max(channels),
         samplerate=samplerate, callback=audio_callback)

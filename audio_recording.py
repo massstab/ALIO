@@ -32,7 +32,7 @@ interval = 30  # minimum time between plot updates  -> float
 blocksize = 1024  # block size (in samples)
 samplerate = None  # sampling rate of audio device  -> float
 downsample = 10  # display every Nth sample, default=10  -> int
-filename = None  # audio file to store recording to  -> str
+filename = 'audio.wav'  # audio file to store recording to  -> str
 subtype = "PCM_24"  # sound file subtype (e.g. "PCM_24") -> str
 
 mapping = [c - 1 for c in channels]
@@ -40,12 +40,8 @@ mapping = [c - 1 for c in channels]
 try:
     if samplerate is None:
         device_info = sd.query_devices(device, 'input')
-        print(device_info)
         # soundfile expects an int, sounddevice provides a float:
         samplerate = int(device_info['default_samplerate'])
-    if filename is None:
-        filename = tempfile.mktemp(prefix='audio', suffix='.wav', dir='')
-
     # Make sure the file is opened before recording anything:
     with sf.SoundFile(filename, mode='x', samplerate=samplerate,
                       channels=max(channels), subtype=subtype) as file:
