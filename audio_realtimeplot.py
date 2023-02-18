@@ -97,7 +97,6 @@ try:
                    right=False, left=False, labelleft=False)
     fig.tight_layout(pad=0)
 
-    print(device)
     stream = sd.InputStream(
         device=device, channels=max(channels),
         samplerate=samplerate, callback=audio_callback)
