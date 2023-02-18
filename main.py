@@ -4,6 +4,12 @@ import os
 import whisper
 import openai
 import datetime
+from configparser import ConfigParser
+
+def get_API_KEY():
+    config = ConfigParser()
+    config.read('config.cfg')
+    return config.get('auth', 'OPENAI_API_KEY')
 
 if __name__ == '__main__':
     python_exec_path = sys.executable
@@ -16,7 +22,8 @@ if __name__ == '__main__':
     result2 = model2.transcribe("audio.wav", fp16=False)
 #     result3 = model3.transcribe("audio.wav", fp16=False)
 
-    openai.api_key = "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"
+    API_KEY = get_API_KEY()
+    openai.api_key = API_KEY
 
     response = openai.Completion.create(
         model="text-davinci-003",
@@ -41,4 +48,3 @@ if __name__ == '__main__':
 
     os.remove('audio.wav')
     print("audio.wav has been deleted")
-
