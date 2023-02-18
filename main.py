@@ -40,7 +40,7 @@ if __name__ == '__main__':
     now = datetime.datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    with open("log.txt", "a") as log_file:
+    with open("interaction.log", "a") as log_file:
         log_file.write(dt_string + " - " + "Question: " + question + "\n" + dt_string + " - " + "Answer: " + answer + "\n")
 
     print(f"Question: {question}")
