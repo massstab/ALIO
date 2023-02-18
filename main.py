@@ -8,7 +8,7 @@ from configparser import ConfigParser
 
 def get_API_KEY():
     config = ConfigParser()
-    config.read('config.cfg')
+    config.read('config_privat.cfg')
     return config.get('auth', 'OPENAI_API_KEY')
 
 if __name__ == '__main__':
