@@ -3,3 +3,4 @@ sounddevice~=0.4.5
 soundfile~=0.11.0
 numpy~=1.24.2
 matplotlib~=3.6.3
+openai-whisper
