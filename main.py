@@ -36,6 +36,8 @@ if __name__ == '__main__':
     )
 
     question = result2["text"]
+    print(f"Question: {question}")
+
     answer = response["choices"][0]["text"][2:]
     now = datetime.datetime.now()
     dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -43,7 +45,6 @@ if __name__ == '__main__':
     with open("interaction.log", "a") as log_file:
         log_file.write(dt_string + " - " + "Question: " + question + "\n" + dt_string + " - " + "Answer: " + answer + "\n")
 
-    print(f"Question: {question}")
     print(f"Answer: {answer}")
 
     os.remove('audio.wav')
