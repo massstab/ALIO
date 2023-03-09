@@ -6,6 +6,8 @@ import logging
 import whisper
 import openai
 
+from audio_recording import Recorder
+
 
 class Assistant:
     """
@@ -33,6 +35,7 @@ class Assistant:
             max_tokens=10,
             top_p=1,
             frequency_penalty=0,
+
             presence_penalty=0
         )
         return response["choices"][0]["text"][2:]
@@ -55,19 +58,18 @@ class TranscriptionHandler:
             print('First load a speech_to_text_model')
 
 
-class RecordingHandler:
-    def __init__(self) -> None:
-        pass
-
-
 def main():
-    logging.basicConfig(filename='interaction.log', filemode='w', format='%(asctime)s - %(levelname)s - %(message)s',
+    logging.basicConfig(filename='interaction.log', filemode='w',
+                        format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
-    python_exec_path = sys.executable
-    subprocess.run([python_exec_path, 'audio_realtimeplot.py'])
+    # python_exec_path = sys.executable
+    # subprocess.run([python_exec_path, 'audio_realtimeplot.py'])
 
     howie = Assistant('Howie')
     howie.setup_assistant()
+
+    mic_recorder = Recorder()
+    mic_recorder.record()
 
     transcript = TranscriptionHandler()
     transcript.load_speech_to_text_model('base')
@@ -84,8 +86,8 @@ def main():
 
     logging.info(f'From user to assistant: {assistant_text}')
 
-    os.remove('audio.wav')
-    print("audio.wav has been deleted")
+    # os.remove('audio.wav')
+    # print("audio.wav has been deleted")
 
 
 if __name__ == '__main__':
