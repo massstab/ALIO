@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import queue
 import sys
+import time
+import logging
 
 import sounddevice as sd
 import soundfile as sf
@@ -17,52 +19,70 @@ import numpy as np
 
 class Recorder:
     def __init__(self) -> None:
-        self.q_rec = queue.Queue()
-        self.q_plot = queue.Queue()
         self.channels = [1]  # input channels to plot -> int
-        self.device = None  # input device (numeric ID or substring) -> int_or_str
+        # input device (numeric ID or substring) -> int_or_str
+        self.device = None
         self.window = 200  # visible time slot, default=200 ms  -> float
         self.interval = 30  # minimum time between plot updates  -> float
         self.blocksize = 1024  # block size (in samples)
-        self.samplerate = None  # sampling rate of audio device  -> float
         self.downsample = 10  # display every Nth sample, default=10  -> int
-        self.filename = 'audio.wav'  # audio file to store recording to  -> str
+        self.filename = 'tmp.wav'  # audio file to store recording to  -> str
         self.subtype = "PCM_16"  # sound file subtype (e.g. "PCM_24") -> str
         self.mapping = [c - 1 for c in self.channels]
-        self.plotdata = None
-        self.lines = None
 
-    def callback_rec(self, indata, frames, time, status):
+        device_info = sd.query_devices(self.device, 'input')
+        # sampling rate of audio device. soundfile expects int -> int
+        self.samplerate = int(
+            device_info['default_samplerate'])   # type: ignore
+
+        self.q_rec = queue.Queue()
+        self.q_plot = queue.Queue()
+
+    def callback_record(self, indata, frames, time, status):
         if status:
             print(status, file=sys.stderr)
         self.q_rec.put(indata.copy())
-
-    def callback_plot(self, indata, frames, time, status):
-        if status:
-            print(status, file=sys.stderr)
-        # Fancy indexing with mapping creates a (necessary!) copy:
         self.q_plot.put(indata[::self.downsample, self.mapping])
 
-    def record(self):
+    def record(self, max_duration=20):
         try:
-            if self.samplerate is None:
-                device_info = sd.query_devices(self.device, 'input')
-                # soundfile expects an int, sounddevice provides a float:
-                self.samplerate = int(device_info['default_samplerate'])
+            fig = self.prepare_plot()
+            ani = FuncAnimation(fig, self.update_plot,
+                                interval=self.interval, blit=True)
+
+            self.stream = sd.InputStream(samplerate=self.samplerate,
+                                         device=self.device,
+                                         channels=max(self.channels),
+                                         callback=self.callback_record)
+
             # Make sure the file is opened before recording anything:
             with sf.SoundFile(self.filename, mode='x', samplerate=self.samplerate,
                               channels=max(self.channels), subtype=self.subtype) as file:
-                with sd.InputStream(samplerate=self.samplerate, device=self.device,
-                                    channels=max(self.channels), callback=self.callback_rec):
-                    print('#' * 80)
-                    print('press esc or close signal window to stop the recording')
-                    print('#' * 80)
-                    while True:
+                print('#' * 71)
+                print(
+                    '# press esc or close the audio waveform window to stop the recording #')
+                print('#' * 71)
+                with self.stream:
+                    """
+                    This part of the code is based on the solution provided in the following StackOverflow post:
+                    https://stackoverflow.com/a/33050617/16480807.
+
+                    It allows for updating the plot and writing the audio data to a file from the same stream 
+                    and in the same process.
+                    """
+                    t_end = time.time() + max_duration
+                    plt.show(block=False)
+                    while time.time() < t_end and plt.fignum_exists(fig.number):  # Records max timeout seconds # type: ignore
+                        plt.draw()
+                        plt.pause(0.001)
                         file.write(self.q_rec.get())
+                    logging.info(
+                        'Recording finished due to closing of the audio waveform window.')
+                    logging.info(f'Write temporary audiofile.')
+
         except KeyboardInterrupt:
+            plt.close()
             print('\nRecording finished: ' + repr(self.filename))
-        except Exception as e:
-            print(e)
 
     def update_plot(self, frame):
         """
@@ -88,13 +108,12 @@ class Recorder:
             plt.close()
 
     def close_plot_by_closevent(self, event):
-        print('Hossa!')
-        # plt.close()
+        plt.close()
 
-    def show_plot(self):
+    def prepare_plot(self):
         if self.samplerate is None:
             device_info = sd.query_devices(self.device, 'input')
-            self.samplerate = device_info['default_samplerate']
+            self.samplerate = device_info['default_samplerate']  # type: ignore
 
         length = int(self.window * self.samplerate / (1000 * self.downsample))
         self.plotdata = np.zeros((length, len(self.channels)))
@@ -103,8 +122,6 @@ class Recorder:
         fig.canvas.mpl_connect(
             'key_press_event', self.close_plot_by_escape)
         fig.canvas.mpl_connect('close_event', self.close_plot_by_closevent)
-        fig.canvas.mpl_connect('button_press_event',
-                               self.close_plot_by_closevent)
         self.lines = ax.plot(self.plotdata)
         if len(self.channels) > 1:
             ax.legend([f'channel {c}' for c in self.channels],
@@ -116,11 +133,4 @@ class Recorder:
                        right=False, left=False, labelleft=False)
         fig.tight_layout(pad=0)
 
-        stream = sd.InputStream(
-            device=self.device, channels=max(self.channels),
-            samplerate=self.samplerate, callback=self.callback_plot)
-        ani = FuncAnimation(fig, self.update_plot,
-                            interval=self.interval, blit=True)
-
-        with stream:
-            plt.show()
+        return fig
