@@ -32,38 +32,36 @@ class Assistant:
             model="text-davinci-003",
             prompt=self.usertext,
             temperature=0.7,
-            max_tokens=10,
+            max_tokens=5,
             top_p=1,
             frequency_penalty=0,
-
             presence_penalty=0
         )
-        return response["choices"][0]["text"][2:]
+        return response["choices"][0]["text"][2:]  # type: ignore
 
 
 class TranscriptionHandler:
     def __init__(self) -> None:
-        self.model = None
-        self.transcription = None
+        pass
 
     def load_speech_to_text_model(self, modelname):
         """For Whisper there are: 'tiny', 'base', 'small' models'"""
         self.model = whisper.load_model(modelname)
 
-    def transcribe_audio_file(self, audiofilename):
+    def transcribe_audio_file(self, filename):
         if self.model:
-            self.transcription = self.model.transcribe(
-                audiofilename, fp16=False)
+            self.transcription = self.model.transcribe(filename, fp16=False)
+            os.remove(filename)
+            logging.info(f"Temporary audiofile {filename} has been deleted")
         else:
             print('First load a speech_to_text_model')
 
 
 def main():
+
     logging.basicConfig(filename='interaction.log', filemode='w',
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d-%b-%y %H:%M:%S', level=logging.INFO)
-    # python_exec_path = sys.executable
-    # subprocess.run([python_exec_path, 'audio_realtimeplot.py'])
 
     howie = Assistant('Howie')
     howie.setup_assistant()
@@ -73,21 +71,15 @@ def main():
 
     transcript = TranscriptionHandler()
     transcript.load_speech_to_text_model('base')
-    transcript.transcribe_audio_file("audio.wav")
+    transcript.transcribe_audio_file(mic_recorder.filename)
 
     user_text = transcript.transcription["text"]
     howie.get_usertext(user_text)
-    print(user_text)
-
     logging.info(f'From user to assistant: {user_text}')
 
     assistant_text = howie.response()
-    print(assistant_text)
 
-    logging.info(f'From user to assistant: {assistant_text}')
-
-    # os.remove('audio.wav')
-    # print("audio.wav has been deleted")
+    logging.info(f'From assistant to user: {assistant_text}')
 
 
 if __name__ == '__main__':
