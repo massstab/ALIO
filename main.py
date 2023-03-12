@@ -5,7 +5,7 @@ from audio_recording import Recorder
 
 
 def main():
-    # Set the loggin level and if the logs should go to console
+    # Set the logging level and if the logs should go to console
     to_console = True
     log_level = "INFO"
     logging_config.configure_logging(log_level, to_console)
@@ -18,7 +18,7 @@ def main():
     mic_recorder = Recorder()
     mic_recorder.record()
 
-    # Whisper tries to transcript your recorded audio. All locally.
+    # Whisper tries to transcribe your recorded audio. All locally.
     transcript = TranscriptionHandler()
     transcript.load_speech_to_text_model('base')
     transcript.transcribe_audio_file(mic_recorder.filename)
@@ -29,6 +29,7 @@ def main():
     # The response from GPT
     assistant_text = howie.response(from_user=user_text)
 
+    # Print or log conversation
     if not to_console:
         print(f"From user to assistant: {user_text}")
         print(f"From assistant to user: {assistant_text}")
