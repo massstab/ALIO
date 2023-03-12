@@ -30,7 +30,8 @@ class Assistant:
         self.usertext = userinput
         logging.info(f'From user to assistant: {userinput}')
 
-    def response(self):
+    def response(self, from_user):
+        self.get_usertext(from_user)
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=self.usertext,
