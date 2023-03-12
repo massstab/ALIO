@@ -7,7 +7,7 @@ To get started with the interface, simply install the required Python packages a
 
 
 ## Linux/macOS
-To use the program, you will need to have [ffmpeg](https://ffmpeg.org/download.html/) installed on your system.  installed on your macOS or Linux system. The program was tested on macOS Monterey Version 12.6.3, but should work on earlier versions of macOS as well.
+To use the program, you will need to have [ffmpeg](https://ffmpeg.org/download.html) installed on your system.  installed on your macOS or Linux system. The program was tested on macOS Monterey Version 12.6.3, but should work on earlier versions of macOS as well.
 
 To install the required Python packages on Linux or macOS, simply run the following command:
 
