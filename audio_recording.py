@@ -76,13 +76,15 @@ class Recorder:
                         plt.draw()
                         plt.pause(0.001)
                         file.write(self.q_rec.get())
+                    plt.close()
                     logging.info(
                         'Recording finished due to closing of the audio waveform window.')
                     logging.info(f'Write temporary audiofile.')
 
         except KeyboardInterrupt:
             plt.close()
-            print('\nRecording finished: ' + repr(self.filename))
+            logging.info('Recording finished due to keyboard interruption.')
+            logging.info('Recording finished: ' + repr(self.filename))
 
     def update_plot(self, frame):
         """
