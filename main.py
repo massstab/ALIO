@@ -25,10 +25,9 @@ def main():
 
     # The transcripted text is beeing sent to openAI
     user_text = transcript.transcription["text"]
-    howie.get_usertext(user_text)
 
     # The response from GPT
-    assistant_text = howie.response()
+    assistant_text = howie.response(from_user=user_text)
 
     if not to_console:
         print(f"From user to assistant: {user_text}")
