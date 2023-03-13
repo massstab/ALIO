@@ -16,7 +16,7 @@ class Assistant:
     def setup_assistant(self):
         config = ConfigParser()
         try:
-            config.read('config.cfg')
+            config.read('config.conf')
             openai.api_key = config.get('auth', 'OPENAI_API_KEY')
         except FileNotFoundError as e:
             logging.error(f"Config file not found: {e}")
@@ -35,7 +35,7 @@ class Assistant:
                 model="text-davinci-003",
                 prompt=self.usertext,
                 temperature=0.7,
-                max_tokens=5,
+                max_tokens=50,
                 top_p=1,
                 frequency_penalty=0,
                 presence_penalty=0)
