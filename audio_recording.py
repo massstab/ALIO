@@ -1,14 +1,8 @@
-#!/usr/bin/env python3
-"""
-Create a recording with arbitrary duration.
-The soundfile module (https://python-soundfile.readthedocs.io/)
-has to be installed!
-"""
-
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import queue
 import sys
+import os
 import time
 import logging
 
@@ -26,14 +20,21 @@ class Recorder:
         self.interval = 30  # minimum time between plot updates  -> float
         self.blocksize = 1024  # block size (in samples)
         self.downsample = 10  # display every Nth sample, default=10  -> int
-        self.filename = 'tmp.wav'  # audio file to store recording to  -> str
+        # audio file to store recording to  -> str
         self.subtype = "PCM_16"  # sound file subtype (e.g. "PCM_24") -> str
         self.mapping = [c - 1 for c in self.channels]
-
         device_info = sd.query_devices(self.device, 'input')
         # sampling rate of audio device. soundfile expects int -> int
         self.samplerate = int(
             device_info['default_samplerate'])   # type: ignore
+
+        # If output audiofilename already exists, inc counter by one
+        base_filename = 'output'
+        filename_num = 1
+        while os.path.exists(f"{base_filename}_{filename_num}.wav"):
+            filename_num += 1
+        self.filename = f"{base_filename}_{filename_num}.wav"
+
 
         self.q_rec = queue.Queue()
         self.q_plot = queue.Queue()
