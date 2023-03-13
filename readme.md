@@ -17,7 +17,7 @@ Once the packages are installed, you can run the program with the following comm
 
     python main.py.
 
-Before running the program, make sure that there is a config.cfg file in the root folder with your OpenAI API key inside. The file should look like this:
+Before running the program, make sure that there is a config.conf file in the root folder with your OpenAI API key inside (you can rename the config.conf.example file). The file should look like this:
 
     [auth]
     OPENAI_API_KEY=<your-KEY>
