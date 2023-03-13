@@ -11,10 +11,11 @@ class TranscriptionHandler:
         """For Whisper there are: 'tiny', 'base', 'small' models'"""
         self.model = whisper.load_model(modelname)
 
-    def transcribe_audio_file(self, filename):
+    def transcribe_audio_file(self, filename, delete=True):
         if self.model:
             self.transcription = self.model.transcribe(filename, fp16=False)
-            os.remove(filename)
+            if delete:
+                os.remove(filename)
             logging.info(f"Temporary audiofile {filename} has been deleted")
         else:
             print('First load a speech_to_text_model')
