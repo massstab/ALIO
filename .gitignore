@@ -1,6 +1,6 @@
 *.log
-config.cfg
-
+# config.conv
+*.wav
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
