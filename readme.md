@@ -1,5 +1,5 @@
-# ALIO - Artificial Language Input Output
-This is a Python-based interface for interacting with the OpenAI GPT-3 assistant API using audio input from a microphone. It's a fun project that I've been working on to explore the capabilities of the OpenAI API and experiment with voice input.
+# ALIO - OpenAI Assistant Interface
+ALIO is a Python-based interface for interacting with the OpenAI GPT-3 assistant API using audio input from a microphone. It's a fun project that I've been working on to explore the capabilities of the OpenAI API and experiment with voice input.
 
 I'm always looking for ways to improve the code and welcome anyone with programming skills to contribute and make it better. Feel free to fork the project and submit pull requests with your improvements.
 
