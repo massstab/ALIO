@@ -15,7 +15,7 @@ To install the required Python packages on Linux or macOS, simply run the follow
 
 Once the packages are installed, you can run the program with the following command:
 
-    python main.py.
+    python main.py
 
 Before running the program, make sure that there is a config.conf file in the root folder with your OpenAI API key inside (you can rename the config.conf.example file). The file should look like this:
 
@@ -62,7 +62,7 @@ Note: Replace <your-KEY> with your actual OpenAI API key.
 
 4. You can then run the program with the following command:
 
-        python main.py.
+        python main.py
 
     If you encounter a Visual C++ runtime error, just install the components as suggested with the downloadlink: https://aka.ms/vs/16/release/vc_redist.x64.exe.
 
