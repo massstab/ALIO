@@ -1,6 +1,5 @@
 *.conf
 *.log
-# config.conv
 *.wav
 
 # Created by .ignore support plugin (hsz.mobi)
