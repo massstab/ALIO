@@ -72,9 +72,9 @@ class Recorder:
                     and in the same process.
                     """
                     t_end = time.time() + max_duration
-                    plt.show(block=False)
+                    # plt.show(block=False)
                     while time.time() < t_end and plt.fignum_exists(fig.number):  # Records max timeout seconds # type: ignore
-                        plt.draw()
+                        # plt.draw()
                         plt.pause(0.001)
                         file.write(self.q_rec.get())
                     plt.close()
