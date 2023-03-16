@@ -1,11 +1,11 @@
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-import queue
-import sys
 import os
+import sys
 import time
 import logging
+import queue
 
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 import sounddevice as sd
 import soundfile as sf
 import numpy as np
@@ -34,7 +34,6 @@ class Recorder:
         while os.path.exists(f"{base_filename}_{filename_num}.wav"):
             filename_num += 1
         self.filename = f"{base_filename}_{filename_num}.wav"
-
 
         self.q_rec = queue.Queue()
         self.q_plot = queue.Queue()
@@ -72,9 +71,7 @@ class Recorder:
                     and in the same process.
                     """
                     t_end = time.time() + max_duration
-                    # plt.show(block=False)
                     while time.time() < t_end and plt.fignum_exists(fig.number):  # Records max timeout seconds # type: ignore
-                        # plt.draw()
                         plt.pause(0.001)
                         file.write(self.q_rec.get())
                     plt.close()
