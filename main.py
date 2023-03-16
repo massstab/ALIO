@@ -29,7 +29,7 @@ def main():
 
     # This will record your voice with the default input device of your machine
     mic_recorder = Recorder()
-    mic_recorder.record()
+    mic_recorder.record(max_duration=10)
 
     # Whisper tries to transcribe your recorded audio. All locally.
     transcript = TranscriptionHandler()
