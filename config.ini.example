@@ -1,0 +1,16 @@
+[auth]
+OPENAI_API_KEY=<your-KEY>
+
+[Logging]
+to_console = True
+log_level = INFO
+
+[Assistant]
+name = Howie
+
+[Recording]
+max_duration = 10
+delete_audio = False
+
+[Transcription]
+model = base

@@ -11,19 +11,27 @@ import logging_config
 from assistant import Assistant
 from transcription import TranscriptionHandler
 from audio_recording import Recorder
+import configparser
+import os
 
 
 def main():
+    # Load configuration from file
+    config = configparser.ConfigParser()
+    config_file = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), 'config.ini')
+    config.read(config_file)
+
     # Set the logging level and if the logs should go to console
-    to_console = True
-    log_level = "INFO"
+    to_console = config.getboolean('Logging', 'to_console')
+    log_level = config.get('Logging', 'log_level')
     logging_config.configure_logging(log_level, to_console)
 
     # Would you like to keep the recorded audio file?
-    delete_audio = False
+    delete_audio = config.getboolean('Recording', 'delete_audio')
 
     # Give your assistant a name!
-    name = 'Howie'
+    name = config.get('Assistant', 'name')
     howie = Assistant(name)
     howie.setup_assistant()
 
@@ -32,9 +40,11 @@ def main():
     mic_recorder.record(max_duration=10)
 
     # Whisper tries to transcribe your recorded audio. All locally.
+    model = config.get('Transcription', 'model')
     transcript = TranscriptionHandler()
-    transcript.load_speech_to_text_model('base')
-    transcript.transcribe_audio_file(mic_recorder.filename, delete=delete_audio)
+    transcript.load_speech_to_text_model(model)
+    transcript.transcribe_audio_file(
+        mic_recorder.filename, delete=delete_audio)
     user_text = transcript.transcription["text"]
 
     # The transcripted text is beeing sent to openAI
