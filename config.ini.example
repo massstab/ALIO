@@ -1,0 +1,9 @@
+[auth]
+OPENAI_API_KEY=<your-KEY>
+
+[general]
+TO_CONSOLE = True
+LOG_LEVEL = INFO
+DELETE_AUDIO = False
+ASSISTANT_NAME = Howie
+MODEL = base
