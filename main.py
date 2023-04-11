@@ -23,15 +23,15 @@ def main():
     config.read(config_file)
 
     # Set the logging level and if the logs should go to console
-    to_console = config.getboolean('Logging', 'to_console')
-    log_level = config.get('Logging', 'log_level')
+    to_console = config.getboolean('general', 'TO_CONSOLE')
+    log_level = config.get('general', 'LOG_LEVEL')
     logging_config.configure_logging(log_level, to_console)
 
     # Would you like to keep the recorded audio file?
-    delete_audio = config.getboolean('Recording', 'delete_audio')
+    delete_audio = config.getboolean('general', 'DELETE_AUDIO')
 
     # Give your assistant a name!
-    name = config.get('Assistant', 'name')
+    name = config.get('general', 'ASSISTANT_NAME')
     howie = Assistant(name)
     howie.setup_assistant()
 
@@ -40,7 +40,7 @@ def main():
     mic_recorder.record(max_duration=10)
 
     # Whisper tries to transcribe your recorded audio. All locally.
-    model = config.get('Transcription', 'model')
+    model = config.get('general', 'MODEL')
     transcript = TranscriptionHandler()
     transcript.load_speech_to_text_model(model)
     transcript.transcribe_audio_file(
