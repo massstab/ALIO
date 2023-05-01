@@ -1,6 +1,7 @@
 import logging
 from configparser import ConfigParser
 import openai
+from hugchat import hugchat
 
 
 class Assistant:
@@ -11,9 +12,9 @@ class Assistant:
 
     def __init__(self, firstname) -> None:
         self.firstname = firstname
-        self.usertext = None
+        self.usertext = ''
 
-    def setup_assistant(self):
+    def setup_assistant_openai(self):
         config = ConfigParser()
         try:
             config.read('config.ini')
@@ -28,7 +29,7 @@ class Assistant:
         self.usertext = userinput
         logging.info(f'From user to assistant: {userinput}')
 
-    def response(self, from_user):
+    def response_openai(self, from_user):
         self.get_usertext(from_user)
         try:
             response = openai.Completion.create(
@@ -47,3 +48,14 @@ class Assistant:
             # Handle authentication error, e.g. check credentials or log
             print(f"OpenAI API request was not authorized: {e}")
             return None
+
+    def response_hugging_chat(self, from_user):
+        self.get_usertext(from_user)
+        chatbot = hugchat.ChatBot()
+        # id = chatbot.new_conversation()
+        # print("id: ", id) 
+        # chatbot.change_conversation(id)
+        response_text = chatbot.chat(self.usertext)
+        logging.info(f'From assistant to user: {response_text}')
+        chatbot.get_conversation_list()
+        return response_text
