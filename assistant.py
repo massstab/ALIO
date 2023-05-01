@@ -16,7 +16,7 @@ class Assistant:
     def setup_assistant(self):
         config = ConfigParser()
         try:
-            config.read('config.conf')
+            config.read('config.ini')
             openai.api_key = config.get('auth', 'OPENAI_API_KEY')
         except FileNotFoundError as e:
             logging.error(f"Config file not found: {e}")

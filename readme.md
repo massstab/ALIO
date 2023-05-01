@@ -17,12 +17,12 @@ Once the packages are installed, you can run the program with the following comm
 
     python main.py
 
-Before running the program, make sure that there is a config.conf file in the root folder with your OpenAI API key inside (you can rename the config.conf.example file). The file should look like this:
+Make sure to rename the config.ini.example file in the root folder to config.ini and include your OpenAI API key under the [auth] section as follows:
 
     [auth]
     OPENAI_API_KEY=<your-KEY>
 
-Note: Replace <your-KEY> with your actual OpenAI API key.
+Note: Make sure not to include the angle brackets <>.
 
 ## Windows
 
@@ -66,4 +66,12 @@ Note: Replace <your-KEY> with your actual OpenAI API key.
 
     If you encounter a Visual C++ runtime error, just install the components as suggested with the downloadlink: https://aka.ms/vs/16/release/vc_redist.x64.exe.
 
-    If you encounter any problems with the local Whisper installation, follow the instructions in the readme: https://github.com/openai/whisper.
+    If you encounter any problems with the local Whisper installation, follow the instructions in the readme: https://github.com/openai/whisper. 
+
+5. Make sure to rename the `config.ini.example` file in the root folder to `config.ini` and include your OpenAI API   key under the `[auth]` section as follows: 
+
+        [auth]
+        OPENAI_API_KEY=<your-KEY>
+
+
+    Note: Make sure not to include the angle brackets <>.
