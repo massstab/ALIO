@@ -7,12 +7,15 @@ I've been working on to explore the capabilities of the OpenAI API and
 experiment with voice input.
 """
 
+import os
 import logging_config
+import configparser
 from assistant import Assistant
 from transcription import TranscriptionHandler
 from audio_recording import Recorder
-import configparser
-import os
+from playsound import playsound
+from bark import SAMPLE_RATE, generate_audio, preload_models
+from scipy.io.wavfile import write as write_wav
 
 
 def main():
@@ -33,7 +36,7 @@ def main():
     # Give your assistant a name!
     name = config.get('general', 'ASSISTANT_NAME')
     howie = Assistant(name)
-    howie.setup_assistant()
+    # howie.setup_assistant()
 
     # This will record your voice with the default input device of your machine
     mic_recorder = Recorder()
@@ -57,6 +60,15 @@ def main():
             print(f"From assistant to user: {assistant_text}")
         else:
             print(f"Upsi. No response from {name}")
+
+    # Play Audio of the response
+    # generate audio from text
+    text_prompt = assistant_text
+    audio_array = generate_audio(text_prompt)
+
+    # save audio to disk
+    write_wav("audio.wav", SAMPLE_RATE, audio_array)
+    playsound('audio.mp3')
 
 
 if __name__ == '__main__':
