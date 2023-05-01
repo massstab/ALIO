@@ -12,7 +12,7 @@ class Assistant:
 
     def __init__(self, firstname) -> None:
         self.firstname = firstname
-        self.usertext = None
+        self.usertext = ''
 
     def setup_assistant_openai(self):
         config = ConfigParser()
