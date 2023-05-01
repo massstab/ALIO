@@ -4,3 +4,4 @@ sounddevice
 soundfile
 openai
 openai-whisper
+hugchat
