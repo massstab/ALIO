@@ -33,7 +33,10 @@ def main():
     # Give your assistant a name!
     name = config.get('general', 'ASSISTANT_NAME')
     howie = Assistant(name)
-    howie.setup_assistant()
+
+    # openai needs api key. Comment if using hugging-chat
+    # howie.setup_assistant_openai()
+
 
     # This will record your voice with the default input device of your machine
     mic_recorder = Recorder()
@@ -48,7 +51,7 @@ def main():
     user_text = transcript.transcription["text"]
 
     # The transcripted text is beeing sent to openAI
-    assistant_text = howie.response(from_user=user_text)
+    assistant_text = howie.response_hugging_chat(from_user=user_text)
 
     # Print or log conversation
     if not to_console:
