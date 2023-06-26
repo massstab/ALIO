@@ -52,9 +52,9 @@ class Assistant:
     def response_hugging_chat(self, from_user):
         self.get_usertext(from_user)
         chatbot = hugchat.ChatBot()
-        # id = chatbot.new_conversation()
-        # print("id: ", id)
-        # chatbot.change_conversation(id)
+        id = chatbot.new_conversation()
+        print("id: ", id)
+        chatbot.change_conversation(id)
         response_text = chatbot.chat(self.usertext)
         logging.info(f'From assistant to user: {response_text}')
         chatbot.get_conversation_list()

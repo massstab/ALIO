@@ -8,14 +8,14 @@ experiment with voice input.
 """
 
 import os
-import logging_config
 import configparser
+import logging_config
 from assistant import Assistant
 from transcription import TranscriptionHandler
 from audio_recording import Recorder
-from playsound import playsound
 from bark import SAMPLE_RATE, generate_audio, preload_models
 from scipy.io.wavfile import write as write_wav
+from playsound import playsound
 
 
 def main():
@@ -36,7 +36,9 @@ def main():
     # Give your assistant a name!
     name = config.get('general', 'ASSISTANT_NAME')
     howie = Assistant(name)
-    # howie.setup_assistant()
+
+    # openai needs api key. Comment if using hugging-chat
+    # howie.setup_assistant_openai()
 
     # This will record your voice with the default input device of your machine
     mic_recorder = Recorder()
@@ -51,7 +53,7 @@ def main():
     user_text = transcript.transcription["text"]
 
     # The transcripted text is beeing sent to openAI
-    assistant_text = howie.response(from_user=user_text)
+    # assistant_text = howie.response_hugging_chat(from_user=user_text)
 
     # Print or log conversation
     if not to_console:
@@ -61,14 +63,15 @@ def main():
         else:
             print(f"Upsi. No response from {name}")
 
-    # Play Audio of the response
     # generate audio from text
-    text_prompt = assistant_text
+    text_prompt = 'Play sound on Python is easy. There are several modules that can play a sound file(.wav). These solutions are cross platform(Windows, Mac, Linux).'
     audio_array = generate_audio(text_prompt)
 
     # save audio to disk
-    write_wav("audio.wav", SAMPLE_RATE, audio_array)
-    playsound('audio.mp3')
+    write_wav("audio3.wav", SAMPLE_RATE, audio_array)
+
+    # Play Audio of the response
+    playsound('audio3.wav')
 
 
 if __name__ == '__main__':
